@@ -1,0 +1,36 @@
+<?php
+$servername = "172.20.10.3";
+$username = "argSysAdmin";
+$password = "argbearing";
+$dbname = "bs_showdata";
+
+// 创建连接
+$conn = new mysqli($servername, $username, $password, $dbname);
+// 检查连接
+if ($conn->connect_error) {
+    die("连接失败: " . $conn->connect_error);
+}
+
+// 查询 tb_liuliang 表中的指定列
+$sql = "SELECT id, leix1, leix2, status, gj, sj,sjlx FROM tb_liuliang";
+$result = $conn->query($sql);
+
+// 检查是否有结果
+if ($result->num_rows > 0) {
+    // 将结果转换为关联数组
+    $data = array();
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    
+    // 将数组转换为 JSON 格式并输出
+    header('Content-Type: application/json');
+    echo json_encode($data);
+} else {
+    // 如果没有结果，输出空数组
+    echo json_encode(array());
+}
+
+// 关闭连接
+$conn->close();
+?>

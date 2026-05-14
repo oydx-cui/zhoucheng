@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>测试 ArgBearing API</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 50px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #007bff;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>? ArgBearing API 测试</h1>
+        
+        <h3>测试异常检测接口</h3>
+        <form id="anomalyForm">
+            <label>Machine ID:</label>
+            <input type="number" name="machine_id" value="1" required>
+            
+            <label>Bearing ID:</label>
+            <input type="number" name="bearing_id" value="1" required>
+            
+            <button type="button" onclick="testAnomaly()">测试异常检测</button>
+        </form>
+
+        <h3>测试 RUL 预测接口</h3>
+        <form id="rulForm">
+            <label>Machine ID:</label>
+            <input type="number" name="machine_id" value="1" required>
+            
+            <label>Bearing ID:</label>
+            <input type="number" name="bearing_id" value="1" required>
+            
+            <button type="button" onclick="testRUL()">测试 RUL 预测</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function testAnomaly() {
+            const formData = new FormData(document.getElementById('anomalyForm'));
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '? 正在调用异常检测接口...';
+
+            fetch('http://localhost/anomaly_det.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = '? 异常检测结果:\n\n' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                resultDiv.innerHTML = '? 错误:\n' + error;
+            });
+        }
+
+        function testRUL() {
+            const formData = new FormData(document.getElementById('rulForm'));
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '? 正在调用 RUL 预测接口...';
+
+            fetch('http://localhost/rul_predict.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = '? RUL 预测结果:\n\n' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                resultDiv.innerHTML = '? 错误:\n' + error;
+            });
+        }
+    </script>
+</body>
+</html>
